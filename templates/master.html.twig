@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Required meta tags-->
+        <meta charset="utf-8">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <!-- Your app title -->
+        <title>{% block title %}Index{% endblock %}</title>
+        <!-- Path to Framework7 iOS CSS theme styles-->
+        <link rel="manifest" href="/manifest.json">
+        <!-- Path to Framework7 iOS related color styles -->
+        <link rel="stylesheet" href="/css/framework7.material.min.css">
+        <link rel="stylesheet" href="/css/framework7.material.colors.min.css">
+
+        <link rel="stylesheet" href="/css/framework7-icons.css">
+        <!-- Path to your custom app styles-->
+        <link rel="stylesheet" href="/css/my-app.css">   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        {% block headextra %} {% endblock %}
+    </head>
+    <body>
+        <!-- Status bar overlay for full screen mode (PhoneGap) -->
+        <div class="statusbar-overlay"></div>
+        <!-- Panels overlay-->
+        <div class="panel-overlay"></div>
+        <!-- Left panel with reveal effect-->
+        <div class="panel panel-left panel-reveal">
+            <div class="content-block">
+
+                {% if userSession %}
+
+                    <div class="content-block">      
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    Signed in as {{userSession.email}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-block">   
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <a class="button button-fill external" href='/logout'>Log Out</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% else %}
+
+                    <div class="content-block">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <a class="button button-fill external" href='/login'>Sign in</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-block">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <a class="button button-fill external" href='/register'>Register</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                {% endif %}
+
+                <!--NAV AREA -->
+                <div class="list-block">
+                    <ul>
+                        <li>
+                            <a href="/products/list" class="item-link item-content external">
+                                <div class="item-media"><i class="icon icon-f7"></i></div>
+                                <div class="item-inner">
+                                    <div class="item-title">Products</div>
+
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/stores/list" class="item-link item-content external">
+                                <div class="item-media"><i class="icon icon-f7"></i></div>
+                                <div class="item-inner">
+                                    <div class="item-title">Stores</div>
+
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/price/list" class="item-link item-content external">
+                                <div class="item-media"><i class="icon icon-f7"></i></div>
+                                <div class="item-inner">
+                                    <div class="item-title">Prices</div>
+
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/nearbystores" class="item-link item-content external">
+                                <div class="item-media"><i class="icon icon-f7"></i></div>
+                                <div class="item-inner">
+                                    <div class="item-title">Stores Nearby</div>
+
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- Views -->
+
+        <div class="views  layout-white">
+            <!-- Your main view, should have "view-main" class -->
+            <div class="view view-main">
+                {% block floater %}
+
+                    <!-- Speed Dial Wrap -->
+                    <div class="speed-dial">
+                        <!-- FAB inside will open Speed Dial actions -->
+                        <a href="#" class="floating-button">
+                            <!-- First icon is visible when Speed Dial actions are closed -->
+                            <i class="icon icon-plus"></i>
+                            <!-- Second icon is visible when Speed Dial actions are opened -->
+                            <i class="icon icon-close"></i>
+                        </a>
+                        <!-- Speed Dial Actions -->
+                        <div class="speed-dial-buttons">
+                            <!-- First Speed Dial button add price -->
+                            <a href="/price/add" class="external">
+                                <i class="icon f7-icons">money_dollar</i>
+                            </a>
+                            <!-- Second Speed Dial add product button -->
+                            <a href="/products/add" class="external">
+                                <i class="icon f7-icons">bag_fill</i>
+                            </a>
+                            <!-- Third Speed Dial add store button -->
+                            <a href="/stores/add" class="external">
+                                <i class="icon f7-icons">collection_fill</i>
+                            </a>
+                             <!-- Fourth Speed Dial nearby stores button -->
+                            <a href="/nearbystores" class="external">
+                                <i class="icon f7-icons">compass</i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- End of Speed Dial -->
+                {% endblock %}
+                <!-- Top Navbar-->
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
+<div class="left"> <a href="#" class="external color-white" onclick="window.history.back();">&nbsp;&nbsp;<i class="f7-icons">chevron_left</i></a>&nbsp;&nbsp;</div>
+                        <div class="center">{% block overlayTitle %} <i class="f7-icons">bolt_fill</i> PriceHub{% endblock %}</div>
+
+                        <div class="right">
+                            <!-- 
+                              Right link contains only icon - additional "icon-only" class
+                              Additional "open-panel" class tells app to open panel when we click on this link
+                            -->
+                            <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
+                <div class="pages navbar-through toolbar-through">
+                    <!-- Page, "data-page" contains page name -->
+                    <div data-page="index" class="page">
+                        <!-- Scrollable page content -->
+                    {% block searchbar %}{% endblock %}
+                    <div class="page-content  layout-white"> 
+                        {% block content %}
+
+
+                            <!-- content goes here -->
+
+
+
+                        {% endblock %}
+                        {# creates white space at bottom of screen #}
+                        <div class="content-block">&nbsp;</div>
+                    </div> 
+                </div>
+            </div>
+            <!-- Bottom Toolbar-->
+            <div class="toolbar theme-bluegray">
+                <div class="toolbar-inner">
+                    <!-- Toolbar links -->
+                    <div class="content-block">
+                        <a href="/" class="external color-white"><i class="icon f7-icons">home_fill</i></a> 
+                    </div>
+                    {# <a href="#" class="link">Link 2</a> #}
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="/js/framework7.min.js"></script>
+    <!-- barcode -->
+    <script type="text/javascript" src="/js/quagga.min.js"></script>
+    <!-- Path to your app js-->
+    <script type="text/javascript" src="/js/my-app.js"></script>
+    <script>
+        
+    
+    </script>
+{% block scriptextra %}{% endblock %}
+</body>
+</html>              

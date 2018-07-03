@@ -1,0 +1,15 @@
+{% extends "master.html.twig" %}
+{% block title %}Password Reset{% endblock %}
+{% block content %}
+    <div class='content-block'>
+        <div class="card">
+            <div class="card-header">Password Successfully Reset</div>
+            <div class="card-content">
+                <div class="card-content-inner"> <p>Your password has been reset. Please login now.</p></div>
+            </div>
+        </div> 
+        <div class="content-block">           
+            <a href="/login" class='external button button-raised big-button button-fill color-blue'>Login</a>
+        </div>
+    </div>
+{% endblock %}

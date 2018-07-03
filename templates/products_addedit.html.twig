@@ -1,0 +1,77 @@
+{% extends "master.html.twig" %}
+{% block title %}Products {% if isEditing %}Edit{% else %}Add{% endif %} {% endblock %}
+{% block content %}
+
+    {% if errorList %}
+        <div class="content-block"> 
+            <ul>
+                {% for error in errorList %}
+                    <li>{{error}}</li>
+                    {% endfor %}
+            </ul>
+        </div>
+    {% endif %} 
+
+
+    <div class="content-block"> 
+        <div class="content-block-title">Products</div>
+        <form method="post" enctype="multipart/form-data" >
+            <div class="list-block">
+                <ul>
+                    <!-- Text inputs -->
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon f7-icons">bag</i></div>                            
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" placeholder="Product name" name="name" value="{{v.name}}">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    {# image path #}
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon f7-icons">camera</i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="file" placeholder="Product Image" name="productImage">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    {# comment #}
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon f7-icons">compose</i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <textarea placeholder="Write a comment..." name="comment" class="resizable">{{v.comment}}</textarea>
+                                </div>    
+                            </div>
+                        </div>
+                    </li>
+
+                    {# submit #}
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <input type="submit" class="button button-big button-fill" value="{% if isEditing %}Update{% else %}Add{% endif %} Product">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+        </form>
+    </div> 
+</div>
+<div class="content-block">&nbsp;</div>
+{% endblock %}
+
+{% block scriptextra %}
+    <script>
+     
+    </script>
+{% endblock %}

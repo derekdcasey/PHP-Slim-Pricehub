@@ -1,0 +1,102 @@
+{% extends "master.html.twig" %}
+
+
+{% block content %}
+
+    <div class="card">
+        <div class="card-header">{{list.productName}}</div>
+        <img src="{{list.productImage}}" style="width:100%; height:100%;">
+        <div class="card-content">
+            <div class="card-content-inner">
+                <p>Product: <a class="external" href="/products/view/{{list.productId}}">{{list.productName}}</a></p>
+                <p>Barcode: {{list.productBarcode}}</p>
+                <p>Store:<a class="external" href="/stores/view/{{list.storeId}}">{{list.storeName}}</a></p>
+                <p>Modified: {{list.dateRegistered}}</p>
+                {# TODO ADD link to prices page WHERE productId={{list.id}} #}
+
+            </div>
+        </div>
+        <div class="card-footer">
+            
+            <div class="col-auto"><a href="/price/list" class="link external button button-fill color-lightblue">Price list</a></div>
+            <div class="col-auto"><a href="/price/edit/{{list.priceId}}" class="link external button button-fill">Update</a></div>
+            <div class="col-auto"><a href="/price/delete/{{list.priceId}}" class="link external button button-fill">Delete</a></div>
+           
+        </div>
+    </div>
+
+        
+   
+      
+        
+    
+
+        
+        
+         <div class="accordion-item">
+             
+    <div class="card">
+          <div class="accordion-item-toggle  color-lightblue"><div class="card-header">Price History</div></div> 
+          <div class="accordion-item-content">
+        <div class="card-content">
+            <div class="card-content-inner">
+                <div class="list-block">
+                <ul>
+                {% for p in allprices %}
+
+                    <li {% if p.onSpecial == 1 %}style="background-color:#90EE90;" {% endif %} >
+                            
+                                <div class="item-inner">
+                                    
+                                    <div class="item-title">${{p.price}} /{{p.quantity}} {{p.unit}}</div>
+                                    <div class="item-after"> {{p.dateRegistered}}&nbsp;</div>
+                                    <div class="item-subtitle">{{p.storeName}}</div>
+
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                </div>
+                    <div class="card">
+        <div class="card-content">
+            <div class="card-content-inner">
+               <canvas id="myChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+                    
+{% endblock %}
+
+{% block scriptextra %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+    <script>
+var ctx = document.getElementById("myChart").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [{% for p in allprices2 %} {% if loop.first %}"{{p.dateRegistered|date("m/d/Y")}}" {% else %},"{{p.dateRegistered|date("m/d/Y")}}"{% endif %} {% endfor %}],
+        datasets: [{
+            label: 'History',
+            data: [{% for p in allprices2 %}{% if loop.first %}{{p.price}}{% else %},{{p.price}}{% endif %}{% endfor %}],
+            borderColor: 'rgb(255,127,80)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
+    {% endblock %}

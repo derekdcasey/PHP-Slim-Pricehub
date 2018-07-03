@@ -1,0 +1,120 @@
+{% extends "master.html.twig" %}
+
+{% block headextra %} 
+    <style>
+        #map {
+            height: 12em;            
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% if errorList %}
+        <ul>
+            {% for error in errorList %}
+                <li>{{error}}</li>
+                {% endfor %}
+        </ul>
+    {% endif %} 
+  
+        <div class="content-block"> 
+            <div class="content-block-title">Stores</div>
+            <form method="post" enctype="multipart/form-data">
+                <div class="list-block">
+                    <ul>
+                        <!-- Text inputs -->
+                        <li>
+                            <div class="item-content">
+                                <div class="item-media"><i class="icon f7-icons">info</i></div>
+                                <div class="item-inner">
+                                    <div class="item-input">
+                                        <input type="text" placeholder="Store Name" name="name" value="{{v.name}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <input type="hidden" name="longitude" id="longitude" value="{{v.longitude}}">
+                        <input type="hidden" name="latitude" id="latitude" {{v.latitude}}>                                                     
+                        
+                        {# image path #}
+                        <li>
+                            <div class="item-content">
+                                <div class="item-media"><i class="icon f7-icons">photos</i></div>
+                                <div class="item-inner">
+                                    <div class="item-input">
+                                        <input type="file" name="storeImage" value="{{v.logoPath}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+
+
+                        {# submit #}
+                        <li>
+                            <div class="item-content">
+                                <div class="item-inner">
+                                    <input type="submit" class="button button-big button-fill" value="{% if isEditing %}Update{% else %}Add{% endif %} Store">
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+            </form>
+        </div> 
+            <div class="card">
+                <div class="card-content">
+                    <div class="card-content-inner"><div id="map"></div></div>
+                </div>
+            </div>     
+    </div>
+
+{% endblock %}
+
+{% block scriptextra %} 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxxl2OsLeKyA3upPOzMaPDpVUq6dNzR48">
+    </script>
+    <script>
+        var map;
+   function initialize() {     
+      var position = new google.maps.LatLng(50.45, 4.45);    // set your own default location.
+      var myOptions = {
+        zoom: 15,
+        center: position
+      };
+      var map = new google.maps.Map(document.getElementById("map"), myOptions);
+
+      // We send a request to search for the location of the user.  
+      // If that location is found, we will zoom/pan to this place, and set a marker
+      navigator.geolocation.getCurrentPosition(locationFound, locationNotFound);
+
+      function locationFound(position) {
+        // we will zoom/pan to this place, and set a marker
+        var location = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+        // var accuracy = position.coords.accuracy;
+        map.setCenter(location);
+        var marker = new google.maps.Marker({
+            position: location, 
+            map: map, 
+            draggable: true
+        });
+        // set the value of the <input>
+        updateInput(location.lat(), location.lng());
+        // Add a "drag end" event handler
+        google.maps.event.addListener(marker, 'dragend', function() {
+          updateInput(this.position.lat(), this.position.lng());
+        });
+      }
+
+      function locationNotFound() {
+        // location not found, you might want to do something here
+      }
+
+    }
+    function updateInput(lat, lng) {
+      document.getElementById("longitude").value = lng;
+      document.getElementById("latitude").value = lat;
+    }
+   // google.maps.event.addDomListener(window, 'load', initialize);
+   $(document).ready(initialize);
+</script>
+
+{% endblock %}

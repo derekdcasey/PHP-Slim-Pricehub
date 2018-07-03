@@ -1,0 +1,99 @@
+{% extends "master.html.twig" %}
+{% block title %}{{s.name}} Page{% endblock %}
+{% block headextra %}
+    <style>
+        #map{
+            height: 12em;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+  {#  {% for s in store %}  #}
+    <div class="content-block-title theme-bluegray" >{{s.name}}</div>
+ 
+       
+    
+<div class="card">
+  {#<div style="background-image:url({{s.logoPath}})" valign="bottom" class="card-header color-white no-border">{{s.name}}</div>#}
+  <img src="{{s.logoPath}}" style="width:100%; height:100%;">
+  <div class="card-content">
+    <div class="card-content-inner">
+      {# TODO ADD LINK to prices page WHERE storeId={{s.id}} 
+      <p class="buttons-row">
+  <a href="#" class="button button-big ripple-yellow button-fill">{{price}} {% if price > 1 %}Prices{% elseif price < 1 %}Prices{% else %}Price{% endif %}</a>
+</p> #}
+    </div>
+  </div>
+  <div class="card-footer">
+    <a href="/stores/list" class="link external">Store list</a>
+    <a href="/stores/edit/{{s.id}}" class="link external">Update</a>
+    <a href="/stores/delete/{{s.id}}" class="link  external">Delete</a>
+  </div>
+</div>
+  
+   <div class="card">
+  <div class="card-content">
+      <div class="card-content-inner"><div id="map"></div></div>
+  </div>
+</div>  
+
+       <div class="accordion-item">
+             
+    <div class="card">
+          <div class="accordion-item-toggle  color-lightblue"><div class="card-header">Products Sold</div></div> 
+          <div class="accordion-item-content">
+        <div class="card-content">
+            <div class="card-content-inner">
+                <div class="list-block">
+                <ul>
+                {% for p in allproducts %}
+
+                    <li {% if p.onSpecial == 1 %}style="background-color:#90EE90;" {% endif %} >
+                            
+                                <div class="item-inner">
+                                    
+                                    <div class="item-title"><a class="external" href="/products/view/{{p.productId}}">{{p.productName}}</a></div>
+                                    <div class="item-after"> {{p.dateRegistered|date("m/d/Y")}}&nbsp;</div>
+                                    <div class="item-subtitle">${{p.price}} /{{p.quantity}} {{p.unit}}</div>
+
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                </div>
+  
+  
+   {# {% endfor %}  #}
+    
+    {% endblock %}
+
+    {% block scriptextra %} 
+        <script   async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxxl2OsLeKyA3upPOzMaPDpVUq6dNzR48&callback=initMap">
+    </script>
+    <script>
+          var map;
+        //  var lat = ;
+        //  var long = ;
+
+          
+        function initMap() {
+        var uluru = new google.maps.LatLng({{s.latitude}}, {{s.longitude}}); {# {lat: {{s.latitude}}, lng:{{s.longitude}}}; #}
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 15,
+          center: uluru
+        });
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+      }
+
+</script>
+
+{% endblock %}

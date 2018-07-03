@@ -1,0 +1,368 @@
+{% extends "master.html.twig" %}
+
+
+{% block headextra %}
+
+    <script src="/js/quagga.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('input[name=barcode]').bind("propertychange change click keyup input paste", function () {
+
+                barcode = $('#barcode').val();
+                $.ajax({
+                    url: '/isbarcoderegistered/' + barcode,
+                    method: "POST",
+                    dataType: 'json',
+                    success: function (data)
+                    {
+                        // JSON.parse(data);
+                        var productName = data["productName"];
+                        var price = data["price"];
+                        var quantity = data["quantity"];
+                        var unit = data["unit"];
+                        var onSpecial = data["onSpecial"];
+                        document.getElementById('productName').value = productName;
+                        document.getElementById('price').value = price;
+                        document.getElementById('quantity').value = quantity;
+                        document.getElementById('unit').value = unit;
+                        document.getElementById('onSpecial').value = onSpecial;
+
+
+                    }
+                });
+
+
+            });
+        });
+
+    </script>
+    <script>
+        window.onload = function () {
+            var startPos;
+            var geoSuccess = function (position) {
+                startPos = position;
+                document.getElementById('lat').value = startPos.coords.latitude;
+                document.getElementById('long').value = startPos.coords.longitude;
+            };
+            navigator.geolocation.getCurrentPosition(geoSuccess);
+
+        };
+    </script>
+
+{% endblock %}
+
+{% block content %}
+    {% if errorList %}
+    <div class="content-block"> 
+        <ul>
+            {% for error in errorList %}
+                <li>{{error}}</li>
+                {% endfor %}
+        </ul>
+    </div>
+{% endif %} 
+
+    {# <div class="content-block-title">{% if isEditing %}Update{% else %}Add{% endif %} Price</div> #}
+
+    <form method="post" enctype="multipart/form-data" id="form">
+        <input type="hidden" name="lat" id="lat" value="">
+        <input type="hidden" name="long" id="long" value="">
+        <div class="list-block">
+
+            <!-- Text inputs -->
+            <div class="row">
+                <div class="col-50">
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div>
+                                <a href="#" data-popup=".popup-scan" onclick="startScanner();" class="open-popup button button-big button-fill color-orange">Scan Barcode</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-50">
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div>
+                                <a href="#" data-popup=".popup-products" class="open-popup button button-big button-fill">Select Product</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ul>
+
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon f7-icons">camera</i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+
+                                <input type="file" id="picPath" placeholder="Product Image" name="productImage" value="{{v.picPath}}">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                             <div class="item-media"><i class="fa fa-barcode fa-2x"></i></div>
+                            <div class="item-input">
+                                <input type="text" placeholder="Barcode" name="barcode" id="barcode" value="{{v.barcode}}">
+
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+
+    <!-- Smart select item -->
+     <a href="#" class="item-link smart-select" data-page-title="" data-back-on-select="true">
+        <!-- select -->
+        <select name="store" id="store">
+                            {% for s in storeList %}
+                            <option value="{{s.name}}"{% if v.storeName == s.name %} selected {% endif %}>{{s.name}}</option>
+                            {% endfor %}
+                            <button href="/stores/add" class="button button-fill">Add New Store</button>
+        </select>
+        
+        <div class="item-content">
+          <div class="item-inner">
+            <!-- Select label -->
+           <div class="item-media"><i class="icon f7-icons">world</i></div>  
+            <!-- Selected value, not required -->
+            <div class="item-title">Store</div>
+            <div class="item-after">{{v.storeName}}</div>
+          </div>
+        </div>
+      </a>
+  
+                                {# <input type="text" placeholder="Store" name="store" id="store" value="{{v.storeName}}"> #}
+
+                </li>
+
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-media"><i class="icon f7-icons">bag</i></div>  
+                            
+                            <div class="item-input">
+                                <input type="text" placeholder="Product name" name="product" id="productName" value="{{v.productName}}">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-media"><i class="icon f7-icons">money_dollar</i></div>  
+                            <div class="item-input">
+                                <input type="number" step="0.01" placeholder="0.00" name="price" id="price" value="{{v.price}}">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">On Special</div>
+                            <div class="item-input">
+                                <label class="label-switch">
+                                    <input type="checkbox" id="onSpecial" name="onSpecial" {% if v.onSpecial == 1 %} checked {% endif %}>
+                                    <div class="checkbox"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+
+                <div class="row">
+                    <div class="col-50">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">Qty</div>
+                                <div class="item-input">
+                                    <input type="number" id="quantity" name="quantity" placeholder="Qty" value="{{v.quantity}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-50">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">Unit</div>
+                                <div class="item-input">
+
+                                    <select id="unit" name="unit">
+                                        <option {%if v.unit == "unit"%} selected="selected" {%endif%} value="unit">unit</option>
+                                        <option value="g" {% if v.unit == "g" %} selected="selected" {% endif %}>g(grams)</option>
+                                        <option value="kg" {% if v.unit == "kg" %} selected="selected" {% endif %}>kg(kilograms)</option>
+                                        <option  value="ml" {% if v.unit == "ml" %} selected="selected" {% endif %}>ml(mililiters)</option>
+                                        <option  value="l" {% if v.unit == "l" %} selected="selected" {% endif %}>l(liters)</option> 
+                                    </select>
+                                </div>
+                            </div>
+                        </div>                               
+                    </div>
+                </div>
+            </ul>
+            <div class="content-block">
+                <div class="item-content">
+                    <div class="item-inner">
+                        <input type="submit" value="{% if isEditing %}Update{% else %}Add{% endif %}" class="button button-fill button-big color-blue"/>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</form>
+
+    <!-- barcode popup  -->
+    <div class="popup popup-scan">
+        <div class="content-block">
+            &nbsp;
+            <div class="content-block"><div id="scanner-container"></div></div>
+            <div class="content-block"> <a href="#" onclick="closeScanner();" class="close-popup button button-fill">Close popup</a></div>
+
+            <!-- Include the image-diff library -->
+
+        </div>
+    </div>
+
+
+    <!-- barcode popup  -->
+    <div class="popup popup-products">
+        <div class="content-block">
+            <p>About</p>
+            <p><a href="#" class="close-popup" id="pop">Close popup</a></p>
+            <p>Lorem ipsum dolor ...</p>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scriptextra %}
+    <script>
+        var _scannerIsRunning = false;
+        function closeScanner() {
+            Quagga.close();
+        }
+        function startScanner() {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    numOfWorkers: navigator.hardwareConcurrency,
+                    target: document.querySelector('#scanner-container'),
+                    constraints: {
+                        width: {min: 640},
+                        height: {min: 480},
+                        facingMode: "environment",
+                        aspectRatio: {min: 1, max: 2}
+                    },
+                },
+                decoder: {
+                    readers: [
+                        "code_128_reader",
+                        "ean_reader",
+                        "ean_8_reader",
+                        "code_39_reader",
+                        "code_39_vin_reader",
+                        "codabar_reader",
+                        "upc_reader",
+                        "upc_e_reader",
+                        "i2of5_reader"
+                    ],
+                    debug: {
+                        showCanvas: true,
+                        showPatches: true,
+                        showFoundPatches: true,
+                        showSkeleton: true,
+                        showLabels: true,
+                        showPatchLabels: true,
+                        showRemainingPatchLabels: true,
+                        boxFromPatches: {
+                            showTransformed: true,
+                            showTransformedBox: true,
+                            showBB: true
+                        }
+                    }
+                },
+
+            }, function (err) {
+                if (err) {
+                    console.log(err);
+                    return
+                }
+
+                console.log("Initialization finished. Ready to start");
+                Quagga.start();
+
+                // Set flag to is running
+                _scannerIsRunning = true;
+            });
+
+            Quagga.onProcessed(function (result) {
+                var drawingCtx = Quagga.canvas.ctx.overlay,
+                        drawingCanvas = Quagga.canvas.dom.overlay;
+
+                if (result) {
+                    if (result.boxes) {
+                        drawingCtx.clearRect(0, 0, parseInt(drawingCanvas.getAttribute("width")), parseInt(drawingCanvas.getAttribute("height")));
+                        result.boxes.filter(function (box) {
+                            return box !== result.box;
+                        }).forEach(function (box) {
+                            Quagga.ImageDebug.drawPath(box, {x: 0, y: 1}, drawingCtx, {color: "green", lineWidth: 2});
+                        });
+                    }
+
+                    if (result.box) {
+                        Quagga.ImageDebug.drawPath(result.box, {x: 0, y: 1}, drawingCtx, {color: "#00F", lineWidth: 2});
+                    }
+
+                    if (result.codeResult && result.codeResult.code) {
+                        Quagga.ImageDebug.drawPath(result.line, {x: 'x', y: 'y'}, drawingCtx, {color: 'red', lineWidth: 3});
+                    }
+                }
+            });
+
+
+
+            Quagga.onDetected(function (result) {
+                var countDecodedCodes = 0, err = 0;
+                $.each(result.codeResult.decodedCodes, function (id, error) {
+                    if (error.error != undefined) {
+                        countDecodedCodes++;
+                        err += parseFloat(error.error);
+                    }
+                });
+                if (err / countDecodedCodes < 0.1) {
+                    document.getElementById("barcode").value = result.codeResult.code;
+                    Quagga.stop();
+                    document.getElementById('pop').click();
+                    $.ajax({
+                        type: "POST",
+                        url: '/isbarcoderegistered/code',
+                        data: {upc: code}
+                    });
+                } else {
+                    // probably wrong code
+                }
+
+            });
+
+        }
+
+    </script>
+{% endblock %}

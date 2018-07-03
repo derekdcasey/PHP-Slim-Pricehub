@@ -1,0 +1,18 @@
+{% extends "master.html.twig" %}
+
+{% block title %}Product {% if isEditing %}edited{% else %}added{% endif %}{% endblock %}
+
+{% block content %}    
+    <div class="content-block-title">Product {% if isEditing %}Edited{% else %}Added{% endif %}</div>
+    <div class="card">
+  <div class="card-content">
+    <div class="card-content-inner">{{v.name}} {% if isEditing %}edited{% else %}added{% endif %} successfully</div>
+  </div>
+         <div class="card-footer">
+    <a href="/products/list" class="external">Go to list</a>
+    <a href="/products/view/{{v.id}}" class="external">See product</a>
+  </div>
+</div>
+    
+{% endblock %}
+

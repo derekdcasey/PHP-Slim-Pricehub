@@ -1,0 +1,64 @@
+{% extends "master.html.twig" %}
+
+{% block overlayTitle %}Password Reset{% endblock %}
+
+{% block content %}
+    <div class="content-block"><p>Hi {{email}},</p>
+        <p>Please enter your new password:</p>
+    </div>
+    <form method="post">
+
+<div class="list-block">
+    <br>
+  <ul>
+    <!-- Text inputs -->
+
+        <li>
+      <div class="item-content">
+        <div class="item-inner">
+          <div class="item-title label">Password</div>
+          <div class="item-input">
+            <input type="password" placeholder="Password" name="pass1">
+          </div>
+        </div>
+      </div>
+    </li>
+    
+            <li>
+      <div class="item-content">
+        <div class="item-inner">
+          <div class="item-title label">Password</div>
+          <div class="item-input">
+            <input type="password" placeholder="Confirm Password" name="pass2">
+          </div>
+        </div>
+      </div>
+    </li>
+  
+    <li>
+        <div class="item-content">
+             <div class="item-inner">
+        <input type="submit" value="Login" class="button button-big button-fill color-blue"/>
+             </div>
+        </div>
+ 
+  </ul>
+    
+     {% if errorList %}
+        <br>
+        <div class="content-block">
+<ul>
+    {% for error in errorList %}
+        
+    <li>{{error}}</li>
+    {% endfor %}
+    
+</ul>
+{% endif %}
+    
+    </div>
+</div>
+    
+    
+    
+{% endblock %}

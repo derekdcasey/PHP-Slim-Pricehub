@@ -1,0 +1,67 @@
+{% extends "master.html.twig" %}
+
+{% block overlayTitle %}Login{% endblock %}
+
+{% block content %}
+
+    <form method="post">
+
+<div class="list-block">
+    <br>
+  <ul>
+    <!-- Text inputs -->
+
+    <li>
+      <div class="item-content">
+        <div class="item-inner">
+          <div class="item-title label">E-mail</div>
+          <div class="item-input">
+            <input type="email" placeholder="E-mail" name="email">
+          </div>
+        </div>
+      </div>
+    </li>
+
+        <li>
+      <div class="item-content">
+        <div class="item-inner">
+          <div class="item-title label">Password</div>
+          <div class="item-input">
+            <input type="password" placeholder="Password" name="password">
+          </div>
+        </div>
+      </div>
+    </li>
+    
+  
+    <li>
+        <div class="item-content">
+             <div class="item-inner">
+        <input type="submit" value="Login" class="button button-raised big-button button-fill color-blue"/>
+             </div>
+        </div>
+       </li>
+       <li>
+           <div class="content-block">           
+            <a href="/register" class='external button button-raised big-button button-fill color-blue'>Create an account</a>
+           </div>
+            </li>
+            <li>
+            <div class="content-block">           
+             <a href="/passreset/request" class='external button button-raised big-button button-fill color-orange'>Forgot you password?</a>
+           </div>
+            </li>
+  </ul>
+    
+    <div class="content-block">
+        {% if error %}
+    <p>Login failed, try again or <a href="/register">register</a></p>
+{% endif %}
+    </div>
+    
+    </div>
+</div>
+    
+    
+    
+{% endblock %}

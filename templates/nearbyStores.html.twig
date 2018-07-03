@@ -1,0 +1,114 @@
+{% extends "master.html.twig" %}
+{% block title %}{{p.name}} Page{% endblock %}
+{% block headextra %}
+    <style>
+        #map{
+            height: 12em;
+        }
+    </style>
+    <script>
+
+    </script>
+{% endblock %}
+{% block content %}
+
+    <input type="hidden" id="long" name="long">
+    <input type="hidden" id="lat" name="lat">
+
+  <div class="card">
+        <div class="card-content">
+            <div class="card-content-inner"><div id="map"></div></div>
+        </div>
+    </div>  
+
+    
+    <div class="content-block-title">Nearby stores list</div>
+
+    <div class="list-block">
+        <ul id="nearbyStores">
+            <!-- javascript stores list goes here -->
+        </ul>
+    </div>
+
+
+  
+
+{% endblock %}
+
+{% block scriptextra %} 
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxxl2OsLeKyA3upPOzMaPDpVUq6dNzR48">
+    </script> 
+    <script>
+        var map;
+
+        function initialize() {
+            var position = new google.maps.LatLng(50.45, 4.45); // set your own default location.
+            var myOptions = {
+                zoom: 13,
+                center: position
+            };
+
+            var map = new google.maps.Map(document.getElementById("map"), myOptions);
+           
+            // We send a request to search for the location of the user.  
+            // If that location is found, we will zoom/pan to this place, and set a marker
+            navigator.geolocation.getCurrentPosition(locationFound, locationNotFound);
+            function locationFound(position) {
+                // we will zoom/pan to this place, and set a marker
+                var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                // var accuracy = position.coords.accuracy;
+                map.setCenter(location);
+                // set the value an value of the <input>
+                updateInput(location.lat(), location.lng());
+
+                lat = $('#lat').val();
+                long = $('#long').val();
+                                                               
+                $.get('/nearbystores/' + lat + '/' + long, function (data) {
+                    data = JSON.parse(data);
+                    var storeText = "";
+                    // add new markers
+                    for (var i = 0; i < data.length; i++) {
+                        var store = data[i];
+                        var uluru = new google.maps.LatLng(store.latitude, store.longitude);
+                        var marker = new google.maps.Marker({
+                            position: uluru,
+                            map: map,
+                            title: store.description,
+                            label: store.name.charAt(0)
+                        });
+
+                        
+                        //add stores links to html list
+                         storeText = '<li>\
+                    <a href="/stores/view/' + store.id + '" class="item-link item-content external">\
+                        <div class="item-media"><img src="' + store.logoPath + '" width="44" height="44"></div>\
+                        <div class="item-inner">\
+                            <div class="item-title-row">\
+                                <div class="item-title">' + store.name + ' is ' + (Number(store.distance)).toFixed(3) + ' km away</div>\
+                            </div>\
+                        </div>\
+                    </a>\
+                </li>';
+                    $("#nearbyStores").append(storeText);
+                    }
+                    
+                });
+
+            }
+
+
+            function locationNotFound() {
+                // location not found, you might want to do something here
+            }
+
+        }
+        function updateInput(lat, lng) {
+            document.getElementById("long").value = lng;
+            document.getElementById("lat").value = lat;
+        }
+
+        $(document).ready(initialize);
+
+    </script>
+{% endblock %}

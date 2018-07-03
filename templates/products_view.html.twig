@@ -1,0 +1,168 @@
+{% extends "master.html.twig" %}
+{% block title %}{{p.name}} Page{% endblock %}
+{% block headextra %}
+    <style>
+        #map{
+            height: 12em;
+        }
+    </style>
+    <script>
+
+    </script>
+{% endblock %}
+{% block content %}
+    {#  {% for s in store %}  #}
+
+
+
+
+    <div class="card">
+        <div class="card-header">{{p.prodName}}</div>
+        <img src="{{p.picPath}}" style="width:100%; height:100%;">
+        <div class="card-content">
+            <div class="card-content-inner">
+                <p class="color-gray">Added by {{p.username}}</p>
+                <p>Barcode: {{p.barcode}}</p>
+                <p>Comment: {{p.comment}}</p>
+                {# TODO ADD link to prices page WHERE productId={{p.id}}
+                <p class="buttons-row">
+                    <a href="#" class="button button-big ripple-yellow button-fill">{{price}} {% if price > 1 %}Prices{% elseif price < 0 %}Prices{% else %}Price{% endif %}</a>
+                </p> #}
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="/products/list" class="link external">Product list</a>
+            <a href="/products/edit/{{p.id}}" class="link external">Update</a>
+            <a href="/products/delete/{{p.id}}" class="link  external">Delete</a>
+        </div>
+    </div>
+
+    <input type="hidden" id="long" name="long">
+    <input type="hidden" id="lat" name="lat">
+
+         <div class="accordion-item">
+             
+    <div class="card">
+          <div class="accordion-item-toggle  color-lightblue"><div class="card-header">Sold At</div></div> 
+          <div class="accordion-item-content">
+        <div class="card-content">
+            <div class="card-content-inner">
+                <div class="list-block">
+                <ul>
+                {% for p in allstores %}
+
+                    <li {% if p.onSpecial == 1 %}style="background-color:#90EE90;" {% endif %} >
+                            
+                                <div class="item-inner">
+                                    
+                                    <div class="item-title"><a class="external" href="/stores/view/{{p.storeId}}">{{p.storeName}}</a></div>
+                                    <div class="item-after"> {{p.dateRegistered|date("m/d/Y")}}&nbsp;</div>
+                                    <div class="item-subtitle">${{p.price}} /{{p.quantity}} {{p.unit}}</div>
+
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                </div>
+{#
+    <div class="content-block-title">Nearby stores list</div>
+
+    <div class="list-block">
+        <ul id="nearbyStores">
+            <!-- javascript stores list goes here -->
+        </ul>
+    </div>
+
+
+    <div class="card">
+        <div class="card-content">
+            <div class="card-content-inner"><div id="map"></div></div>
+        </div>
+    </div>  
+
+
+#}
+{% endblock %}
+
+{% block scriptextra %} 
+  {#  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxxl2OsLeKyA3upPOzMaPDpVUq6dNzR48">
+    </script> 
+    <script>
+        var map;
+
+        function initialize() {
+            var position = new google.maps.LatLng(50.45, 4.45); // set your own default location.
+            var myOptions = {
+                zoom: 13,
+                center: position
+            };
+
+            var map = new google.maps.Map(document.getElementById("map"), myOptions);
+            // We send a request to search for the location of the user.  
+            // If that location is found, we will zoom/pan to this place, and set a marker
+            navigator.geolocation.getCurrentPosition(locationFound, locationNotFound);
+            function locationFound(position) {
+                // we will zoom/pan to this place, and set a marker
+                var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                // var accuracy = position.coords.accuracy;
+                map.setCenter(location);
+                // set the value an value of the <input>
+                updateInput(location.lat(), location.lng());
+
+                lat = $('#lat').val();
+                long = $('#long').val();
+                                                                //extra parameter added
+                $.get('/closestores/' + lat + '/' + long + '/' + {{p.id}}, function (data) {
+                    data = JSON.parse(data);
+                    var storeText = "";
+                    // add new markers
+                    for (var i = 0; i < data.length; i++) {
+                        var store = data[i];
+                        var uluru = new google.maps.LatLng(store.latitude, store.longitude);
+                        var marker = new google.maps.Marker({
+                            position: uluru,
+                            map: map,
+                            title: store.description,
+                            label: store.name.charAt(0)
+                        });
+
+                        
+                        //add stores links to html list
+                         storeText = '<li>\
+                    <a href="/stores/view/' + store.id + '" class="item-link item-content external">\
+                        <div class="item-media"><img src="' + store.logoPath + '" width="44" height="44"></div>\
+                        <div class="item-inner">\
+                            <div class="item-title-row">\
+                                <div class="item-title">' + store.name + ' is ' + (Number(store.distance)).toFixed(3) + ' km away</div>\
+                            </div>\
+                        </div>\
+                    </a>\
+                </li>';
+            $("#nearbyStores").append(storeText);
+                    }
+                    
+                });
+
+            }
+
+
+            function locationNotFound() {
+                // location not found, you might want to do something here
+            }
+
+        }
+        function updateInput(lat, lng) {
+            document.getElementById("long").value = lng;
+            document.getElementById("lat").value = lat;
+        }
+
+        $(document).ready(initialize);
+
+    </script> #}
+{% endblock %}

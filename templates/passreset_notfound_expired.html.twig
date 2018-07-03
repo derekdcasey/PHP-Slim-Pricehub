@@ -1,0 +1,17 @@
+{% extends "master.html.twig" %}
+
+{% block title %}Invalid/Expired/Not Found{% endblock %}
+
+{% block content %}    
+    <div class='content-block'>
+        <div class="card">
+            <div class="card-header">Invalid or Expired Token</div>
+            <div class="card-content">
+                <div class="card-content-inner">Password reset token invalid, not found or expired</div>
+            </div>
+            <div class="card-footer"><a class="link external" href="/passreset/request">Get new password reset token</a></div>
+        </div>
+
+
+    </div>
+{% endblock %}

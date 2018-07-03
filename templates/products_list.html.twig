@@ -1,0 +1,105 @@
+{% extends "master.html.twig" %}
+{% block title %}Product List{% endblock %}
+{% block headextra %}
+  
+{% endblock %}
+{% block searchbar %}
+    <!-- Search Bar with "searchbar-init" class for auto initialization -->
+    <form class="searchbar searchbar-init" data-search-list=".list-block-search" data-search-in=".item-title" data-found=".searchbar-found" data-not-found=".searchbar-not-found">
+        <div class="searchbar-input">
+            <input type="search" placeholder="Search">
+            <a href="#" class="searchbar-clear"></a>
+        </div>
+    </form>
+
+    <div class="searchbar-overlay"></div>
+    <div class="page-content">
+        <div class="content-block searchbar-not-found">
+            Nothing found
+        </div>
+
+        <div class="list-block list-block-search searchbar-found">          
+            <!-- List View -->
+            <div class="content-block-title">Product List</div>
+            <ul>
+                <div class="list-block">
+
+
+                    {% for l in list %}
+                        <li>
+                            <a href="/products/view/{{l.id}}" class="item-link item-content external">
+                                <div class="item-media"><img style="max-width:44px;" src="{{l.picPath}}"></div>
+                                <div class="item-inner">
+                                    <div class="item-title-row">
+                                        <div class="item-title">{{l.name}}</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>                       
+                    {% else %}
+
+                    {% endfor %}  
+
+                    <div class="appendBlock">
+                        {# ajax appended list goes in here #}
+                    </div>
+                </div>
+            </ul>
+
+        </div>
+       <div class="content-block">&nbsp;</div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+
+{% endblock %}
+
+
+{% block scriptextra %}
+    <script>
+        $('.page-content').bind('scroll', chk_scroll);
+        var load = 0;
+        var maxItems = ({{pc}});
+        //combine original list and appended list
+        var lastIndex = ($('ul .list-block li').length + $('.appendBlock li').length);
+        function chk_scroll(e)
+        {
+            var elem = $(e.currentTarget);
+            //user scrolled to bottom of screen
+                if (elem[0].scrollHeight - elem.scrollTop() === elem.outerHeight()) {
+                    //if the list is smaller than the database rows call AJAX
+                     if (lastIndex < maxItems) {
+                    load++;//load more rows
+
+                    $.get('/productsList/' + load, function (data) {
+                        //load more products
+                        data = JSON.parse(data);
+                        var productText = "";
+                        // add new products
+                        for (var i = 0; i < data.length; i++) {
+                            var product = data[i];
+                            //add products to html list
+                            productText = '<li>\
+                            <a href="/products/view/' + product.id + '" class="item-link item-content external">\
+                                <div class="item-media"><img style="max-width:44px;" src="' + product.picPath + '"></div>\
+                                <div class="item-inner">\
+                                    <div class="item-title-row">\
+                                        <div class="item-title">' + product.name + '</div>\
+                                    </div>\
+                                </div>\
+                            </a>\
+                        </li>';
+                            $('.appendBlock').append(productText);
+                        }
+                   lastIndex = $('ul .list-block li').length + $('appendBlock li').length;
+                    });
+                } else {
+                    return; //do nothing
+                }
+                }
+            
+        }
+    </script>
+{% endblock %}

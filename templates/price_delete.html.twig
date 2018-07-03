@@ -1,0 +1,21 @@
+{% extends "master.html.twig" %}
+
+{% block content %}
+  
+   
+    <div class="card">
+  <div class="card-content">
+    <div class="card-content-inner">Are you sure you want to delete this price?</div>
+  </div>
+         <div class="card-footer">
+    <a href="/price/list" class="link">Cancel</a>
+     <form method="post"  style="display: inline;">
+        <input type="hidden" name="confirmed" value="true">
+        <input type="submit" value="Delete" class="button">
+    </form>
+  </div>
+</div>
+
+
+{% endblock %}
+

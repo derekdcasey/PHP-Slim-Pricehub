@@ -1,0 +1,27 @@
+
+        <div class="list-block">
+            <!-- List View -->
+            <div class="content-block-title">Price List</div>
+            <ul>
+                <div class="list-block">
+                    {% for p in list %}
+
+                        <li>
+                             <a href="/price/view/{{p.priceId}}" class="external">
+                            
+                                <div class="item-inner">
+                                    
+                                    <div class="item-title">&nbsp;{{p.productName}}</div>
+                                    <div class="item-after">${{p.price}} /{{p.quantity}} {{p.unit}}&nbsp</div>
+                                    <div class="item-subtitle">{{p.storeName}}</div>
+
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </div>
+            </ul>
+        </div>
+        {# creates white space at bottom of screen #}
+        <div class="content-block">&nbsp;</div>
+

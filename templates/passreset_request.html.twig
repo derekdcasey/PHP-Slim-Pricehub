@@ -1,0 +1,51 @@
+{% extends "master.html.twig" %}
+
+{% block overlayTitle %}Forgot Password{% endblock %}
+
+{% block headextra %}
+
+{% endblock %}
+
+{% block content %}
+
+    <form method="post">
+        <div class="content-block">Enter your email below and we'll send you password reset link</div>
+<div class="list-block">
+    <br>
+  <ul>
+   
+    
+    <li>
+      <div class="item-content">
+        <div class="item-inner">
+           
+          <div class="item-title label">E-mail</div>
+          <div class="item-input">
+            <input type="email" placeholder="E-mail" name="email">
+          </div>
+        </div>
+      </div>
+    </li>
+
+    
+        <br>
+        <div class="item-content">
+             <div class="item-inner">
+        <input type="submit" value="Send" class="button button-big button-fill color-blue"/>
+             </div>
+        </div>
+    </li>
+  </ul>
+    
+    </form>
+    {% if error %}
+        <br>
+        <div class="item-content">
+            <p>We werent able to find the email you provided in our records. Try again or <a href='/register'>Register</a> a new account.</p>
+{% endif %}
+    </div>
+</div>
+    
+    
+    
+{% endblock %}
